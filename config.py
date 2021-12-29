@@ -26,5 +26,5 @@ class Config(object):
     MS_TRANSLATOR_KEY = os.environ.get('MS_TRANSLATOR_KEY')
 
     # flask-user settings
-    USER_APP_NAME = 'Flask Starter'
+    USER_APP_NAME = 'NFA Opns'
     USER_ENABLE_CHANGE_USERNAME = False
