@@ -12,7 +12,7 @@ from flask_user import UserManager, SQLAlchemyAdapter
 db = SQLAlchemy()
 
 from app.user_models import User
-import app.models
+from app.models import Base
 
 migrate = Migrate()
 mail = Mail()
