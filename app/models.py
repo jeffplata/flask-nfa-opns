@@ -9,17 +9,17 @@ class Base(db.Model):
                               onupdate=db.func.current_timestamp())
 
 class Region(Base):
-	__tablename__ = "region"
-	region_name = db.Column(db.String(80))
-	alternate_name = db.Column(db.String(80))
+    __tablename__ = "region"
+    region_name = db.Column(db.String(80))
+    alternate_name = db.Column(db.String(80))
     
     def __repr__(self):
         return '<Region %r>' % (self.region_name)
 
 class Branch(Base):
-	__tablename__ = "branch"
-	branch_name = db.Column(db.String(80))
-	region_id = db.Column(db.Integer(), db.ForeignKey('region.id', ondelete='CASCADE'))
+    __tablename__ = "branch"
+    branch_name = db.Column(db.String(80))
+    region_id = db.Column(db.Integer(), db.ForeignKey('region.id', ondelete='CASCADE'))
     
     def __repr__(self):
         return '<Branch %r>' % (self.branch_name)
