@@ -28,3 +28,22 @@ class Warehouse(Base):
     __tablename__ = "warehouse"
     warehouse_name = db.Column(db.String(80))
     warehouse_code = db.Column(db.String(20))
+
+    def __repr__(self):
+        return '<Warehouse %r>' % (self.warehouse_name)
+
+class Container(Base):
+    __tablename__ = "container"
+    cont_name = db.Column(db.String(80))
+    weight = db.Column(db.Numeric(8,2))
+
+    def __repr__(self):
+        return '<Container %r>' % (self.cont_name)
+
+class Commodity(Base):
+    __tablename__ = "commodity"
+    comm_name = db.Column(db.String(80))
+    is_cereal = db.Column(db.Boolean, default=True, nullable=False)
+
+    def __repr__(self):
+        return '<Commodity %r>' % (self.comm_name)
