@@ -45,3 +45,5 @@ logs
 .flaskenv
 .vscode
 app.sqlite 
+*.db
+migrations\*

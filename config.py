@@ -4,13 +4,13 @@ from dotenv import load_dotenv
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
 
-# TODO: fix layout.html, include logout etc
+# NOTE: set the value of DATABASE_URI in .env on production
 
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'app.db')
+        'sqlite:///' + os.path.join(basedir, 'opn-app.db')
         # 'postgresql+psycopg2://postgres:hybrid@localhost/payroll'
     # 'firebird+fdb://sysdba:masterkey@localhost:3050/' + os.path.join(basedir, 'app.fdb')
     # SQLALCHEMY_ECHO = True

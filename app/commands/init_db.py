@@ -14,16 +14,14 @@ class InitDbCommand(Command):
 
 def init_db():
     """ Initialize the database."""
-    db.drop_all()
-    db.create_all()
+    # activate drop_all and create_all if not using alembic
+    # db.drop_all()
+    # db.create_all()
     create_users()
 
 
 def create_users():
     """ Create users """
-
-    # Create all tables
-    db.create_all()
 
     # Adding roles
     admin_role = find_or_create_role('admin', 'Admin')
