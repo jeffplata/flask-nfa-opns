@@ -8,6 +8,7 @@ from flask_admin.contrib.sqla import ModelView
 
 from app import db
 from app.user_models import User, Role
+from app.models import AAP
 from flask import current_app
 
 
@@ -43,10 +44,16 @@ class MyRoleModelView(MyModelView):
     column_list = ('name', 'date_created', 'date_modified')
     form_excluded_columns = ['date_created', 'date_modified', ]
 
-
 admin.add_view(MyUserModelView(User, db.session))
 admin.add_view(MyRoleModelView(Role, db.session))
 
+
+# App modelviews
+
+class AAPModelView(MyModelView):
+    pass
+
+admin.add_view(AAPModelView(AAP, db.session))
 
 @bp.before_app_first_request
 def assign_links_to_admin():
