@@ -8,6 +8,7 @@ from flask_migrate import Migrate
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 from flask_user import UserManager, SQLAlchemyAdapter
+from flask_babel import Babel
 
 db = SQLAlchemy()
 
@@ -34,6 +35,9 @@ def create_app(config_class=Config):
 
     bootstrap.init_app(app)
 
+    babel = Babel()
+    babel.init_app(app)
+
     with app.app_context():
         from app.main import bp as main_bp
         app.register_blueprint(main_bp)
@@ -48,6 +52,10 @@ def create_app(config_class=Config):
 
         from app.errors import bp as errors_bp
         app.register_blueprint(errors_bp)
+
+        #app specific
+        from app.opnforms import bp as opnforms_bp
+        app.register_blueprint(opnforms_bp)
 
     appname = app.config['USER_APP_NAME']
 

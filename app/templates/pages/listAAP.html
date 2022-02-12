@@ -4,8 +4,52 @@
 <p>
 <h1>Authority to Accept Payment</h1>
 </p>
-<p>
-    AAP Page.
-</p>
+
+<div style="font-style: [bold]">
+<a href="#">Today</a>
+</div>
+
+<table class="table table-striped table-condensed">
+  <thead>
+    <tr>
+      <th scope="col">Number</th>
+      <th scope="col">Date</th>
+      <th scope="col">Customer</th>
+      <th scope="col">Item</th>
+      <th scope="col">Bags</th>
+      <th scope="col">Net Kg/Qty</th>
+      <th scope="col">Unit SP</th>
+      <th scope="col">Amount</th>
+      <th scope="col">Check No.</th>
+      <th scope="col">Warehouse</th>
+      <th scope="col">Prepared by</th>
+      <th scope="col">Approved by</th>
+    </tr>
+  </thead>
+  {% if items %}
+  <tbody>
+    {% for i in items%}
+    <tr>
+      <td>{{i.number}}</td>
+      <td>{{i.doc_date}}</td>
+      <td>{{i.customer}}</td>
+      <td>{{i.item}}</td>
+      <td>{{i.bags}}</td>
+      <td>{{i.net_kg_qty}}</td>
+      <td>{{i.unit_sp}}</td>
+      <td>{{i.amount}}</td>
+      <td>{{i.check_no}}</td>
+      <td>{{i.warehouse}}</td>
+      <td>{{i.prepared_by}}</td>
+      <td>{{i.approved_by}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  {% endif %}
+</table>
+
+{% if not items %}
+<div align="center" class="well">No data to show.</div>
+{% endif %}
 
 {% endblock %}
