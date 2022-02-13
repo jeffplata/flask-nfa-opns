@@ -5,11 +5,29 @@
 <h1>Authority to Accept Payment</h1>
 </p>
 
-<div style="font-style: [bold]">
-<a href="#">Today</a>
+<div class="well well-sm" style="font-weight: bold;">
+    <a href="#filterpanel" data-toggle="collapse">Today</a>
+    <span style="display:inline-block; width: 10px;"></span>
+    <a href="#filterpanel" data-toggle="collapse">WD1</a>
+    <span style="display:inline-block; width: 10px;"></span>
+    <a href="#filterpanel" data-toggle="collapse">Alang-alang GID 1</a>
+    <div class="collapse" id="filterpanel" style="font-weight: normal; font-size: small;"><br>
+        <form action="" method="POST" style="font-size: smaller;">
+            {{ form.period.label }}
+            {{ form.period }}<span style="display:inline-block; width: 10px;"></span>
+            {{ form.item.label }}
+            {{ form.item }}<span style="display:inline-block; width: 10px;"></span>
+            {{ form.warehouse.label }}
+            {{ form.warehouse }}<span style="display:inline-block; width: 10px;"></span><br><br>
+            {{ form.submit }}
+            <a href="#filterpanel" data-toggle="collapse" role="button">
+                <button style="color: #454545;">Cancel</button>
+            </a>
+        </form>
+    </div>
 </div>
 
-<table class="table table-striped table-condensed">
+<table class="table table-striped table-condensed" style="font-size: small">
   <thead>
     <tr>
       <th scope="col">Number</th>
