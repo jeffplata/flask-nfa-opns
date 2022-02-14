@@ -9,5 +9,5 @@ class AAPFilterForm(FlaskForm):
         choices=[])
     item = SelectField(validators=[DataRequired()],
         choices=[])
-    warehouse = SelectField(validators=[], choices=[])
+    warehouse = SelectField(validators=[], choices=[], coerce=int)
     submit = SubmitField('Apply')

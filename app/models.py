@@ -44,7 +44,8 @@ class Warehouse(Base):
 
 class Container(Base):
     __tablename__ = "container"
-    cont_name = db.Column(db.String(80))
+    cont_name = db.Column(db.String(20))
+    cont_shortname = db.Column(db.String(20))
     weight = db.Column(db.Numeric(8,2))
 
     def __repr__(self):
@@ -58,12 +59,21 @@ class Commodity(Base):
     def __repr__(self):
         return '<Commodity %r>' % (self.comm_name)
 
+class Variety(Base):
+    __tablename__ = "variety"
+    var_name = db.Column(db.String(20))
+    commodity_id = db.Column(db.Integer(), db.ForeignKey('commodity.id', ondelete='CASCADE'))
+
+    def __repr__(self):
+        return '<Variety %r>' % (self.var_name)
+
 class Item(Base):
-	__tablename__ = "item"
-	item_name = db.Column(db.String(80))
-	commodity_id = db.Column(db.Integer(), db.ForeignKey('commodity.id', ondelete='CASCADE'))
-	container_id = db.Column(db.Integer(), db.ForeignKey('container.id', ondelete='CASCADE'))
-	selling_price = db.Column(db.Numeric(15,2))
+    __tablename__ = "item"
+    item_name = db.Column(db.String(80))
+    commodity_id = db.Column(db.Integer(), db.ForeignKey('commodity.id', ondelete='CASCADE'))
+    variety_id = db.Column(db.Integer(), db.ForeignKey('variety.id', ondelete='CASCADE'))
+    container_id = db.Column(db.Integer(), db.ForeignKey('container.id', ondelete='CASCADE'))
+    selling_price = db.Column(db.Numeric(15,2))
 
 # Form models
 

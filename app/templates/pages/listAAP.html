@@ -6,13 +6,13 @@
 </p>
 
 <div class="well well-sm" style="font-weight: bold;">
-    <a href="#filterpanel" data-toggle="collapse">Today</a>
+    <a href="#filterpanel" data-toggle="collapse">{{ filters[0] }}</a>
     <span style="display:inline-block; width: 10px;"></span>
-    <a href="#filterpanel" data-toggle="collapse">WD1</a>
+    <a href="#filterpanel" data-toggle="collapse">{{ filters[1] }}</a>
     <span style="display:inline-block; width: 10px;"></span>
-    <a href="#filterpanel" data-toggle="collapse">Alang-alang GID 1</a>
+    <a href="#filterpanel" data-toggle="collapse">{{ filters[2] }}</a>
     <div class="collapse" id="filterpanel" style="font-weight: normal; font-size: small;"><br>
-        <form action="" method="POST" style="font-size: smaller;">
+        <form action="/aap" method="POST" style="font-size: smaller;">
             {{ form.period.label }}
             {{ form.period }}<span style="display:inline-block; width: 10px;"></span>
             {{ form.item.label }}
