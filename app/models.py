@@ -15,11 +15,11 @@ class BaseForm(db.Model):
     date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(),
                               onupdate=db.func.current_timestamp())
     doc_date = db.Column(db.Date(), default=db.func.current_date())
-    number = db.Column(db.String(80))
+    number = db.Column(db.String(80), unique=True)
 
 class Region(Base):
     __tablename__ = "region"
-    region_name = db.Column(db.String(80))
+    region_name = db.Column(db.String(80), unique=True)
     alternate_name = db.Column(db.String(80))
     
     def __repr__(self):
@@ -27,7 +27,7 @@ class Region(Base):
 
 class Branch(Base):
     __tablename__ = "branch"
-    branch_name = db.Column(db.String(80))
+    branch_name = db.Column(db.String(80), unique=True)
     region_id = db.Column(db.Integer(), db.ForeignKey('region.id', ondelete='CASCADE'))
     
     def __repr__(self):
@@ -35,8 +35,8 @@ class Branch(Base):
 
 class Warehouse(Base):
     __tablename__ = "warehouse"
-    warehouse_name = db.Column(db.String(80))
-    warehouse_code = db.Column(db.String(20))
+    warehouse_name = db.Column(db.String(80), unique=True)
+    warehouse_code = db.Column(db.String(20), unique=True)
     branch_id = db.Column(db.Integer(), db.ForeignKey('branch.id', ondelete='CASCADE'))
 
     def __repr__(self):
@@ -44,7 +44,7 @@ class Warehouse(Base):
 
 class Container(Base):
     __tablename__ = "container"
-    cont_name = db.Column(db.String(20))
+    cont_name = db.Column(db.String(20), unique=True)
     cont_shortname = db.Column(db.String(20))
     weight = db.Column(db.Numeric(8,2))
 
@@ -53,7 +53,7 @@ class Container(Base):
 
 class Commodity(Base):
     __tablename__ = "commodity"
-    comm_name = db.Column(db.String(80))
+    comm_name = db.Column(db.String(80), unique=True)
     is_cereal = db.Column(db.Boolean, default=True, nullable=False)
 
     def __repr__(self):
@@ -61,19 +61,23 @@ class Commodity(Base):
 
 class Variety(Base):
     __tablename__ = "variety"
-    var_name = db.Column(db.String(20))
+    var_name = db.Column(db.String(20), unique=True)
     commodity_id = db.Column(db.Integer(), db.ForeignKey('commodity.id', ondelete='CASCADE'))
+    commodity = db.relationship('Commodity')
 
     def __repr__(self):
         return '<Variety %r>' % (self.var_name)
 
 class Item(Base):
     __tablename__ = "item"
-    item_name = db.Column(db.String(80))
-    commodity_id = db.Column(db.Integer(), db.ForeignKey('commodity.id', ondelete='CASCADE'))
+    item_name = db.Column(db.String(80), unique=True)
+    # commodity_id = db.Column(db.Integer(), db.ForeignKey('commodity.id', ondelete='CASCADE'))
     variety_id = db.Column(db.Integer(), db.ForeignKey('variety.id', ondelete='CASCADE'))
     container_id = db.Column(db.Integer(), db.ForeignKey('container.id', ondelete='CASCADE'))
     selling_price = db.Column(db.Numeric(15,2))
+    # commodity = db.relationship('Commodity')
+    variety = db.relationship('Variety')
+    container = db.relationship('Container')
 
 # Form models
 

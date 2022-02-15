@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 53ee9823365e
+Revision ID: dc9142637a28
 Revises: 
-Create Date: 2022-02-09 00:46:57.879107
+Create Date: 2022-02-16 00:49:11.764159
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '53ee9823365e'
+revision = 'dc9142637a28'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -45,15 +45,18 @@ def upgrade():
     sa.Column('date_modified', sa.DateTime(), nullable=True),
     sa.Column('comm_name', sa.String(length=80), nullable=True),
     sa.Column('is_cereal', sa.Boolean(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('comm_name')
     )
     op.create_table('container',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('date_created', sa.DateTime(), nullable=True),
     sa.Column('date_modified', sa.DateTime(), nullable=True),
-    sa.Column('cont_name', sa.String(length=80), nullable=True),
+    sa.Column('cont_name', sa.String(length=20), nullable=True),
+    sa.Column('cont_shortname', sa.String(length=20), nullable=True),
     sa.Column('weight', sa.Numeric(precision=8, scale=2), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('cont_name')
     )
     op.create_table('region',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -61,7 +64,8 @@ def upgrade():
     sa.Column('date_modified', sa.DateTime(), nullable=True),
     sa.Column('region_name', sa.String(length=80), nullable=True),
     sa.Column('alternate_name', sa.String(length=80), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('region_name')
     )
     op.create_table('auth_user_roles',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -80,19 +84,31 @@ def upgrade():
     sa.Column('branch_name', sa.String(length=80), nullable=True),
     sa.Column('region_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['region_id'], ['region.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('branch_name')
+    )
+    op.create_table('variety',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('date_created', sa.DateTime(), nullable=True),
+    sa.Column('date_modified', sa.DateTime(), nullable=True),
+    sa.Column('var_name', sa.String(length=20), nullable=True),
+    sa.Column('commodity_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['commodity_id'], ['commodity.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('var_name')
     )
     op.create_table('item',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('date_created', sa.DateTime(), nullable=True),
     sa.Column('date_modified', sa.DateTime(), nullable=True),
     sa.Column('item_name', sa.String(length=80), nullable=True),
-    sa.Column('commodity_id', sa.Integer(), nullable=True),
+    sa.Column('variety_id', sa.Integer(), nullable=True),
     sa.Column('container_id', sa.Integer(), nullable=True),
     sa.Column('selling_price', sa.Numeric(precision=15, scale=2), nullable=True),
-    sa.ForeignKeyConstraint(['commodity_id'], ['commodity.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['container_id'], ['container.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id')
+    sa.ForeignKeyConstraint(['variety_id'], ['variety.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('item_name')
     )
     op.create_table('warehouse',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -102,7 +118,9 @@ def upgrade():
     sa.Column('warehouse_code', sa.String(length=20), nullable=True),
     sa.Column('branch_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['branch_id'], ['branch.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('warehouse_code'),
+    sa.UniqueConstraint('warehouse_name')
     )
     op.create_table('AAP',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -122,7 +140,8 @@ def upgrade():
     sa.Column('approved_by', sa.String(length=80), nullable=True),
     sa.ForeignKeyConstraint(['item_id'], ['item.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['warehouse_id'], ['warehouse.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('number')
     )
     # ### end Alembic commands ###
 
@@ -132,6 +151,7 @@ def downgrade():
     op.drop_table('AAP')
     op.drop_table('warehouse')
     op.drop_table('item')
+    op.drop_table('variety')
     op.drop_table('branch')
     op.drop_table('auth_user_roles')
     op.drop_table('region')
