@@ -4,7 +4,8 @@ from flask_script import Command
 from app import db
 from app.user_models import User, Role
 
-from app.models import Commodity, Container, Variety, Item
+from app.models import Commodity, Container, Variety, Item,\
+    Region, Branch, Warehouse
 
 class InitDbCommand(Command):
     """ Initialize the database."""
@@ -51,7 +52,70 @@ def create_app_data():
     find_or_create_item('Educational Loan', miscellaneous, var_misc)
     find_or_create_item('EA Loan', miscellaneous, var_misc)
 
+    # region: region_name, alternate_name
+    find_or_create_region('Region 1', 'Ilocos Region')
+    find_or_create_region('Region 2', 'Cagayan Valley Region')
+    find_or_create_region('Region 3', 'Central Luzon Region')
+    find_or_create_region('Region 4', 'Southern Tagalog Region')
+    find_or_create_region('Region 5', 'Bicol Region')
+    find_or_create_region('Region 6', 'Central Visayas Region')
+    find_or_create_region('Region 7', 'Western Visayas Region')
+    region8 = find_or_create_region('Region 8', 'Eastern Visayas Region')
+    find_or_create_region('Region 9', 'Zamboanga Peninsula')
+    find_or_create_region('Region 10', 'Northern Mindanao Region')
+    find_or_create_region('Region 11', 'Davao Region')
+    find_or_create_region('Region 12', 'Soccsksargen')
+    find_or_create_region('Region 13', 'National Capital Region')
+    find_or_create_region('Region 14', 'BARMM')
+    find_or_create_region('Region 15', 'CARAGA')
+    find_or_create_region('CO', 'Central Office')
+
+    # branch: branch_name, region
+    leyte_br = find_or_create_branch('Leyte Branch', region8)
+    find_or_create_branch('Samar Branch', region8)
+
+    # warehouse: name, code, branch
+    find_or_create_warehouse('Port Area GID', '123456', leyte_br)
+    find_or_create_warehouse('Alang-alang GID 1', '223456', leyte_br)
+    find_or_create_warehouse('Alang-alang GID 2', '323456', leyte_br)
+    find_or_create_warehouse('San Pablo GID', '423456', leyte_br)
+    find_or_create_warehouse('Cogon GID', '523456', leyte_br)
+    find_or_create_warehouse('Maasin GID', '623456', leyte_br)
+    find_or_create_warehouse('Hilongos JICA', '723456', leyte_br)
+    find_or_create_warehouse('Hinunangan MLGC', '823456', leyte_br)
+    find_or_create_warehouse('St. Bernard FLGC', '923456', leyte_br)
+    find_or_create_warehouse('Biliran GID', '023456', leyte_br)
+
     db.session.commit()
+
+
+def find_or_create_region(name, alt_name):
+    """ Create Region """
+    region = Region.query.filter(Region.region_name == name).first()
+    if not region:
+        region = Region(region_name=name, alternate_name=alt_name)
+        db.session.add(region)
+    return region
+
+
+def find_or_create_branch(name, region):
+    """ Create Branch """
+    branch = Branch.query.filter(Branch.branch_name == name).first()
+    if not branch:
+        branch = Branch(branch_name=name)
+        branch.region = region
+        db.session.add(branch)
+    return branch    
+
+
+def find_or_create_warehouse(name, code, branch):
+    """ Create Warehouse """
+    warehouse = Warehouse.query.filter(Warehouse.warehouse_name == name).first()
+    if not warehouse:
+        warehouse = Warehouse(warehouse_name=name, warehouse_code=code)
+        warehouse.branch = branch
+        db.session.add(warehouse)
+    return warehouse
 
 
 def find_or_create_commodity(name, is_cereal):
@@ -73,7 +137,7 @@ def find_or_create_container(name, short_name, weight):
 
 
 def find_or_create_variety(name, commodity):
-    """ Create Container """
+    """ Create Variety """
     variety = Variety.query.filter(Variety.var_name == name).first()
     if not variety:
         variety = Variety(var_name=name)

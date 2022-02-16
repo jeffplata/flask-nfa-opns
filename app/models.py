@@ -29,15 +29,17 @@ class Branch(Base):
     __tablename__ = "branch"
     branch_name = db.Column(db.String(80), unique=True)
     region_id = db.Column(db.Integer(), db.ForeignKey('region.id', ondelete='CASCADE'))
-    
+    region = db.relationship('Region')
+
     def __repr__(self):
         return '<Branch %r>' % (self.branch_name)
 
 class Warehouse(Base):
     __tablename__ = "warehouse"
-    warehouse_name = db.Column(db.String(80), unique=True)
+    warehouse_name = db.Column(db.String(80))
     warehouse_code = db.Column(db.String(20), unique=True)
     branch_id = db.Column(db.Integer(), db.ForeignKey('branch.id', ondelete='CASCADE'))
+    branch = db.relationship('Branch')
 
     def __repr__(self):
         return '<Warehouse %r>' % (self.warehouse_name)
