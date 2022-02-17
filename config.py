@@ -13,7 +13,7 @@ class Config(object):
         'sqlite:///' + os.path.join(basedir, 'opn-app.db')
         # 'postgresql+psycopg2://postgres:hybrid@localhost/payroll'
     # 'firebird+fdb://sysdba:masterkey@localhost:3050/' + os.path.join(basedir, 'app.fdb')
-    # SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)

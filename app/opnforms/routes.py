@@ -1,9 +1,10 @@
 from app.opnforms import bp
-from flask import render_template
+from flask import render_template, request
 
 from .forms import AAPFilterForm
 from app import db
 from app.models import Variety, Warehouse, Branch, AAP
+from datetime import date
 
 
 # from flask_table import Table, Col
@@ -12,11 +13,14 @@ PERIODS_ = [('today', 'Today'), ('yesterday', 'Yesterday'),\
     ('thisquarter', 'This quarter'), ('lastquarter', 'Last quarter'),\
     ('thisyear', 'This Year'), ('lastyear', 'Last year')] 
 
-ITEMS_ = [('WD1', 'WD1'), ('WD2', 'WD2'), ('PD1', 'PD1'), ('PD3', 'PD3')]
-
-WAREHOUSES_ = [(1, 'Alang-alang GID 1'), (2, 'Alang-alang GID 2')]
-
 BRANCH = Branch.query.filter(Branch.branch_name == 'Leyte Branch').first()
+
+def get_period(token):
+    if token == 'today':
+        period = date.today()
+    else:
+        period = date.today()
+    return period
 
 def get_varieties():
     varieties = Variety.query.all()
@@ -28,20 +32,25 @@ def get_warehouses():
     tup = tuple(((i.id, i.warehouse_name) for i in whses))
     if len(tup) > 1:
         tup = ((-1, '- Any Warehouse -'),) + tup
-    print(tup)
     return tup
 
 @bp.route('/aap', methods=['GET', 'POST'])
 def list_aap():
-    items = AAP.query.all()
+    # items = AAP.query.all()
     form = AAPFilterForm()
-    if form.submit():
-        filters = [dict(PERIODS_).get(form.period.data),
-            dict(get_varieties()).get(form.item.data),
-            dict(get_warehouses()).get(form.warehouse.data)
-            ]
     form.period.choices = PERIODS_
     form.item.choices = get_varieties()
     form.warehouse.choices = get_warehouses()
+    if form.submit():
+        if request.form.get('period'):
+            filters = [dict(PERIODS_).get(form.period.data),
+                dict(get_varieties()).get(form.item.data),
+                dict(get_warehouses()).get(form.warehouse.data)
+                ]
+            # filter_values = [Date()]
+        else:
+            filters = [PERIODS_[0][1], form.item.choices[0][1], form.warehouse.choices[0][1]]
+    items = AAP.query.filter_by(
+        doc_date = get_period(filters[0]))
     return render_template('pages/listAAP.html', items=items, form=form,
         filters=filters)
