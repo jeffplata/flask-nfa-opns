@@ -4,23 +4,18 @@ from flask import render_template, request
 from .forms import AAPFilterForm
 from app import db
 from app.models import Variety, Warehouse, Branch, AAP
-from datetime import date
+from datetime import datetime, date
+import calendar
 
 
 # from flask_table import Table, Col
-PERIODS_ = [('today', 'Today'), ('yesterday', 'Yesterday'),\
-    ('thisweek', 'This week'), ('lastweek', 'Last week'),\
-    ('thisquarter', 'This quarter'), ('lastquarter', 'Last quarter'),\
-    ('thisyear', 'This Year'), ('lastyear', 'Last year')] 
+# PERIODS_ = [('today', 'Today'), ('yesterday', 'Yesterday'),\
+#     ('thisweek', 'This week'), ('lastweek', 'Last week'),\
+#     ('thisquarter', 'This quarter'), ('lastquarter', 'Last quarter'),\
+#     ('thisyear', 'This Year'), ('lastyear', 'Last year')] 
 
+DFMT = '%m/%d/%Y'
 BRANCH = Branch.query.filter(Branch.branch_name == 'Leyte Branch').first()
-
-def get_period(token):
-    if token == 'today':
-        period = date.today()
-    else:
-        period = date.today()
-    return period
 
 def get_varieties():
     varieties = Variety.query.all()
@@ -36,21 +31,26 @@ def get_warehouses():
 
 @bp.route('/aap', methods=['GET', 'POST'])
 def list_aap():
-    # items = AAP.query.all()
+    WAREHOUSES_ = get_warehouses()
+    VARIETIES_ = get_varieties()
+    period_range = [date.today(), date.today()]
     form = AAPFilterForm()
-    form.period.choices = PERIODS_
-    form.item.choices = get_varieties()
-    form.warehouse.choices = get_warehouses()
+    form.item.choices = VARIETIES_
+    form.warehouse.choices = WAREHOUSES_
+    if request.method == 'GET':
+        form.date1.data = period_range[0]
+        form.date2.data = period_range[1]
+        filters = [period_range, form.item.choices[0][1], form.warehouse.choices[0][1]]
+
     if form.submit():
-        if request.form.get('period'):
-            filters = [dict(PERIODS_).get(form.period.data),
-                dict(get_varieties()).get(form.item.data),
-                dict(get_warehouses()).get(form.warehouse.data)
+        if 'submit' in request.form:
+            filters = [[form.date1.data, form.date2.data],
+                dict(VARIETIES_).get(form.item.data),
+                dict(WAREHOUSES_).get(form.warehouse.data)
                 ]
-            # filter_values = [Date()]
-        else:
-            filters = [PERIODS_[0][1], form.item.choices[0][1], form.warehouse.choices[0][1]]
-    items = AAP.query.filter_by(
-        doc_date = get_period(filters[0]))
+    period_range = filters[0]
+    items = AAP.query.filter(
+        AAP.doc_date.between(period_range[0], period_range[1]),
+        )
     return render_template('pages/listAAP.html', items=items, form=form,
         filters=filters)

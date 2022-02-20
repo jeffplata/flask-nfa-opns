@@ -42,6 +42,10 @@ def create_app(config_class=Config):
         from app.main import bp as main_bp
         app.register_blueprint(main_bp)
 
+        # some custom filters for jinja2
+        from .filters import blueprint as filters_bp
+        app.register_blueprint(filters_bp)
+
         # flask-admin
         from app.fadmin import bp as admin_bp
         app.register_blueprint(admin_bp)

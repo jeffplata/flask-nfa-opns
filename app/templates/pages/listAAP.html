@@ -1,4 +1,20 @@
 {% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+  {{ super() }}
+  <style>
+    .dropdown-submenu {
+      position: relative;
+    }
+
+    .dropdown-submenu .dropdown-menu {
+      top: 0;
+      left: 100%;
+      margin-top: -1px;
+    }
+  </style>
+{% endblock %}
 
 {% block main_content %}
 <p>
@@ -6,15 +22,59 @@
 </p>
 
 <div class="well well-sm" style="font-weight: bold;">
-    <a href="#filterpanel" data-toggle="collapse">{{ filters[0] }}</a>
+    <a href="#filterpanel" data-toggle="collapse">{{ filters[0][0]|date }} to {{ filters[0][1]|date }}</a>
     <span style="display:inline-block; width: 10px;"></span>
     <a href="#filterpanel" data-toggle="collapse">{{ filters[1] }}</a>
     <span style="display:inline-block; width: 10px;"></span>
     <a href="#filterpanel" data-toggle="collapse">{{ filters[2] }}</a>
     <div class="collapse" id="filterpanel" style="font-weight: normal; font-size: small;"><br>
         <form action="/aap" method="POST" style="font-size: smaller;">
-            {{ form.period.label }}
-            {{ form.period }}<span style="display:inline-block; width: 10px;"></span>
+
+            <b>Period:</b> {{ form.date1 }} to {{ form.date2 }}
+            <div class="dropdown" style="display:inline;"> 
+            <button
+              class="btn btn-xs dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Quick dates<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" style="font-size: small;">
+              <li><a class="dropdown-item" title="Today" href="#">Today</a></li>
+              <li><a class="dropdown-item" title="Yesterday" href="#">Yesterday</a></li>
+              <li class="divider"></li>
+              <li><a class="dropdown-item" title="Week 1" href="#">Week 1</a></li>
+              <li><a class="dropdown-item" title="Week 2" href="#">Week 2</a></li>
+              <li><a class="dropdown-item" title="Week 3" href="#">Week 3</a></li>
+              <li><a class="dropdown-item" title="Week 4" href="#">Week 4</a></li>
+              <li class="divider"></li>
+              <li><a class="dropdown-item" title="This Month" href="#">This Month</a></li>
+              <li class="dropdown-submenu">
+                <a class="test" tabindex="-1" href="#">Other Months<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">Months</li>
+                  <li><a class="dropdown-item" title="January" tabindex="0" href="#">January</a></li>
+                  <li><a class="dropdown-item" title="February" tabindex="0" href="#">February</a></li>
+                  <li><a class="dropdown-item" title="March" tabindex="0" href="#">March</a></li>
+                  <li><a class="dropdown-item" title="April" tabindex="0" href="#">April</a></li>
+                  <li><a class="dropdown-item" title="May" tabindex="0" href="#">May</a></li>
+                  <li><a class="dropdown-item" title="June" tabindex="0" href="#">June</a></li>
+                  <li><a class="dropdown-item" title="July" tabindex="0" href="#">July</a></li>
+                  <li><a class="dropdown-item" title="August" tabindex="0" href="#">August</a></li>
+                  <li><a class="dropdown-item" title="September" tabindex="0" href="#">September</a></li>
+                  <li><a class="dropdown-item" title="October" tabindex="0" href="#">October</a></li>
+                  <li><a class="dropdown-item" title="November" tabindex="0" href="#">November</a></li>
+                  <li><a class="dropdown-item" title="December" tabindex="0" href="#">December</a></li>
+                </ul>
+              </li>
+              <li><a class="dropdown-item" title="This Year" href="#">This Year</a></li>
+              <li><a class="dropdown-item" title="Last Year" href="#">Last Year</a></li>
+
+            </ul>
+            </div>
+            <span style="display:inline-block; width: 10px;"></span>
             {{ form.item.label }}
             {{ form.item }}<span style="display:inline-block; width: 10px;"></span>
             {{ form.warehouse.label }}
@@ -70,4 +130,71 @@
 <div align="center" class="well">No data to show.</div>
 {% endif %}
 
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script>
+    $(document).ready(function(){
+      $('.dropdown-submenu a.test').on("click", function(e){
+        $(this).next('ul').toggle();
+        e.stopPropagation();
+        e.preventDefault();
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+      n = new Date();
+      y = n.getFullYear();
+      m = n.getMonth() + 1;
+      d = n.getDate();
+      ldm = (new Date(y, m, 0).getDate());
+      ldms = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31,30, 31];
+      if ( ((y % 4 == 0) && (y % 100 != 0)) || (y % 400 == 0) ) {
+        ldms[1] = 29;
+      }
+      mos = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+      $('.dropdown-item').click(function(e) {
+        switch (this.title) {
+          case "Today": v1 = m + "/" + d + "/" + y; v2 = v1; break;
+          case "Yesterday": v1 = m + "/" + (d-1) + "/" + y; v2 = v1; break;
+          case "Week 1": v1 = m + "/" + 1 + "/" + y;
+            v2 = m + "/" + 7 + "/" + y; break;
+          case "Week 2": v1 = m + "/" + 8 + "/" + y;
+            v2 = m + "/" + 15 + "/" + y; break;
+          case "Week 3": v1 = m + "/" + 16 + "/" + y;
+            v2 = m + "/" + 22 + "/" + y; break;
+          case "Week 4": v1 = m + "/" + 23 + "/" + y;
+            v2 = m + "/" + ldm + "/" + y; break;
+          case "This Month": v1 = m + "/" + 1 + "/" + y;
+            v2 = m + "/" + ldm + "/" + y; break;
+          case "January":
+          case "February":
+          case "March":
+          case "April":
+          case "May":
+          case "June":
+          case "July":
+          case "August":
+          case "September":
+          case "October":
+          case "November":
+          case "December":
+            i = mos.indexOf(this.title);
+            v1 = i+1 + "/1/" + y;
+            v2 = i+1 + "/" + ldms[i] + "/" + y;
+            break; 
+          case "This Year": v1 = "1/1/" + y;
+            v2 = "12/31/" + y; break;
+          case "Last Year": v1 = "1/1/" + (y-1);
+            v2 = "12/31/" + (y-1); break;
+        }
+
+        $('#date1').val(v1);
+        $('#date2').val(v2);
+        e.preventDefault();
+      });
+    });
+  </script>
 {% endblock %}
