@@ -21,16 +21,16 @@
 <h1>Authority to Accept Payment</h1>
 </p>
 
-<div class="well well-sm" style="font-weight: bold;">
+<div class="well well-sm col-md-12" style="font-weight: bold;">
     <a href="#filterpanel" data-toggle="collapse">{{ filters[0][0]|date }} to {{ filters[0][1]|date }}</a>
     <span style="display:inline-block; width: 10px;"></span>
     <a href="#filterpanel" data-toggle="collapse">{{ filters[1] }}</a>
     <span style="display:inline-block; width: 10px;"></span>
     <a href="#filterpanel" data-toggle="collapse">{{ filters[2] }}</a>
-    <div class="collapse" id="filterpanel" style="font-weight: normal; font-size: small;"><br>
+    <div class="collapse panel panel-default col-md-12" id="filterpanel" style="font-weight: normal; font-size: small; padding: 10px"><br>
         <form action="/aap" method="POST" style="font-size: smaller;">
 
-            <b>Period:</b> {{ form.date1 }} to {{ form.date2 }}
+            <b>Period:</b> {{ form.date1(size=10) }} to {{ form.date2(size=10) }}
             <div class="dropdown" style="display:inline;"> 
             <button
               class="btn btn-xs dropdown-toggle"
@@ -74,15 +74,53 @@
 
             </ul>
             </div>
+
+            <button
+              class="btn btn-xs"
+              type="button"
+              id="quickdatepanelButton"
+              data-toggle="collapse"
+              data-target="#quickdatepanel"
+            >More dates<span class="caret"></span></button>
+
             <span style="display:inline-block; width: 10px;"></span>
             {{ form.item.label }}
             {{ form.item }}<span style="display:inline-block; width: 10px;"></span>
             {{ form.warehouse.label }}
             {{ form.warehouse }}<span style="display:inline-block; width: 10px;"></span><br><br>
-            {{ form.submit }}
-            <a href="#filterpanel" data-toggle="collapse" role="button">
-                <button style="color: #454545;">Cancel</button>
-            </a>
+
+            <div class="collapse panel panel-default col-md-4" id="quickdatepanel">
+              <table class="table table-condensed ztable-borderless" style="width: 100%;">
+                  <colgroup>
+                      <col style="width:15%; background-color: red;">
+                  </colgroup>
+                  <tr>
+                      <th scope="row">Year:</th>
+                      <td><input type="text" ></td>
+                  </tr>
+                  <tr>
+                      <th scope="row">Month:</th>
+                      <td><input type="text" ></td>
+                  </tr>
+                  <tr>
+                      <th scope="row">Week:</th>
+                      <td>
+                        <div style="border: 1px solid darkgray; padding-left: 2px; top: -10px; padding-top: 0px;" class="radio">
+                          <label class="radio"><input type="radio" name="optradio" style="top: -10px;">Week 1</label>
+                          <label class="radio"><input type="radio" name="optradio">Week 2</label>
+                          <label class="radio"><input type="radio" name="optradio">Week 3</label>
+                        </div>
+                      </td>
+                  </tr>
+              </table>
+            </div>
+
+            <div class="col-md-12">
+                {{ form.submit }}
+                <a href="#filterpanel" data-toggle="collapse" role="button">
+                    <button style="color: #454545;">Cancel</button>
+                </a>
+            </div>
         </form>
     </div>
 </div>
