@@ -7,7 +7,6 @@ from app.models import Variety, Warehouse, Branch, AAP
 from datetime import datetime, date
 import calendar
 
-
 # from flask_table import Table, Col
 # PERIODS_ = [('today', 'Today'), ('yesterday', 'Yesterday'),\
 #     ('thisweek', 'This week'), ('lastweek', 'Last week'),\
