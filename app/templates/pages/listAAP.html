@@ -240,7 +240,9 @@
       $('.dropdown-item').click(function(e) {
         switch (this.title) {
           // case "Today": v1 = m + "/" + d + "/" + y; v2 = v1; break;
-          case "Today": v1 = y + "-" + m + "-" + d; v2 = v1; break;
+          // case "Today": v1 = y + "-" + m + "-" + d; v2 = v1; break;
+          // case "Today": v1 = m + "/" + d + "/" + y; v2 = v1; break;
+          case "Today": v1 = n; v2 = v1; break;
           case "Yesterday": v1 = m + "/" + (d-1) + "/" + y; v2 = v1; break;
           case "Week 1": v1 = m + "/" + 1 + "/" + y;
             v2 = m + "/" + 7 + "/" + y; break;
