@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% import 'admin/static.html' as admin_static with context %}
 
 {% block styles %}
   {{ super() }}
@@ -215,7 +216,9 @@
 
 {% block scripts %}
   {{ super() }}
-  
+  <script src="{{ url_for('static', filename='vendor/moment.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='admin/js/form.js') }}"></script>
+
   <script>
     $(document).ready(function(){
       $('.dropdown-submenu a.test').on("click", function(e){
