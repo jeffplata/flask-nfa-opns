@@ -28,3 +28,6 @@ class Config(object):
     # flask-user settings
     USER_APP_NAME = 'NFA Opns'
     USER_ENABLE_CHANGE_USERNAME = False
+
+    #flask-bootstrap settings
+    BOOTSTRAP_SERVE_LOCAL = True
