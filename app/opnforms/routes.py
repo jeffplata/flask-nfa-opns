@@ -1,17 +1,11 @@
 from app.opnforms import bp
 from flask import render_template, request, url_for
 
-from .forms import AAPFilterForm
+from .forms import AAPFilterForm, AAPForm
 from app import db
-from app.models import Variety, Warehouse, Branch, AAP
+from app.models import Variety, Warehouse, Branch, AAP, Item
 from datetime import datetime, date
 import calendar
-
-# from flask_table import Table, Col
-# PERIODS_ = [('today', 'Today'), ('yesterday', 'Yesterday'),\
-#     ('thisweek', 'This week'), ('lastweek', 'Last week'),\
-#     ('thisquarter', 'This quarter'), ('lastquarter', 'Last quarter'),\
-#     ('thisyear', 'This Year'), ('lastyear', 'Last year')] 
 
 DFMT = '%m/%d/%Y'
 BRANCH = Branch.query.filter(Branch.branch_name == 'Leyte Branch').first()
@@ -27,6 +21,12 @@ def get_warehouses():
     if len(tup) > 1:
         tup = ((-1, '- Any Warehouse -'),) + tup
     return tup
+
+def get_items():
+    return Item.query
+
+def get_warehouses_fac():
+    return Warehouse.query.filter(Warehouse.branch_id == BRANCH.id)
 
 @bp.route('/aap', methods=['GET', 'POST'])
 def list_aap():
@@ -53,3 +53,13 @@ def list_aap():
         )
     return render_template('pages/listAAP.html', items=items, form=form,
         filters=filters)
+
+@bp.route('/aap-new', methods=['GET', 'POST'])
+def aap_new():
+    form = AAPForm()
+
+    if request.method == 'GET':
+        form.item_id.query_factory = get_items
+        form.warehouse_id.query_factory = get_warehouses_fac
+        items = tuple( (i.id, str(round(i.selling_price,2)), i.variety.commodity.is_cereal) for i in get_items() )
+    return render_template('pages/AAPAdd.html', form=form, items=items)

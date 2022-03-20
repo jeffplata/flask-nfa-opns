@@ -1,0 +1,196 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block main_content %}
+
+{% block styles %}
+  {{ super() }}
+  <style>
+    .table-borderless-3 > tbody > tr > td,
+    .table-borderless-3 > tbody > tr > th,
+    .table-borderless-3 > tfoot > tr > td,
+    .table-borderless-3 > tfoot > tr > th,
+    .table-borderless-3 > thead > tr > td,
+    .table-borderless-3 > thead > tr > th {
+        border: none;
+    };
+  </style>
+
+{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="static/jquery-ui-1.13.1.custom/jquery-ui.css">
+{% endblock %}
+
+<p>
+<h3>Create New Authority to Accept Payment</h3>
+</p>
+<div class="col-sm-6 col-xs-12">
+    <form action="" method="post" class="form form-horizontal" role="form">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group form-group-sm">
+        <table class="table table-borderless-3 responsive" width="100%;">
+          <tr>
+            <td width="20%" align="right">
+              {{ form.basic_data.doc_date.label(class="control-label text-right") }}
+            </td>
+            <td width="30%">
+              {{ form.basic_data.doc_date(class="form-control datepicker") }}
+            </td>
+            <td width="20%" align="right">
+              {{ form.basic_data.number.label(class="control-label text-right") }}
+            </td>
+            <td width="30%">
+              {{ form.basic_data.number(class="form-control") }}
+            </td>
+          </tr>
+          {% for f in form if (f.widget.input_type != 'hidden') and (f.name != 'basic_data') %}
+            <tr>
+              <td align="right">
+                {{ f.label(class="control-label", id=f.name + "_label") }}
+              </td>
+              <td colspan="3">
+                {{ f(class="form-control") }}
+            </tr>
+          {% endfor %}
+          <tr>
+            <td></td>
+            <td colspan="3">
+              <input class="btn btn-sm btn-primary" name="submit" id="submit" type="submit" value="Submit">
+
+              {% set b_url = request.referrer %}
+              {% if not b_url %}
+              {% set b_url = "/" %}
+              {% endif %}
+              <a href="{{ b_url }}" class="btn btn-sm btn-default">
+                  <i class="glyphicon glyphicon-arrow-left"></i>
+                  Back
+              </a>
+            </td>
+          </tr>
+
+        </table>
+        </div>
+
+    </form>
+</div>
+
+
+{% block scripts %}
+  {{ super() }}
+
+  <script src="static/js/global.js"></script>
+
+  <script>
+      setInputFilter(document.getElementById("bags"), function(value) {
+          return /^\d*$/.test(value); });
+  </script>
+
+  <script src="static/jquery-ui-1.13.1.custom/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( ".datepicker" ).datepicker({
+      changeMonth: true,
+      changeYear: true,
+      showButtonPanel: true,
+    });
+  } );
+  </script>
+
+  <script>
+    document.getElementById('item_id').onchange = function () {
+        document.getElementById("unit_sp").value = GetSellingPrice(true);
+        var is_item_cereal = GetItemProps()[1];
+        if (!is_item_cereal) {
+            document.getElementById("bags").disabled = true;
+            document.getElementById("bags").value = 0;
+            document.getElementById("net_kg_qty").value = 1;
+            document.getElementById("net_kg_qty_label").innerHTML = 'Quantity';
+            RefreshValues(GetSellingPrice(), 1);
+        }
+        else {
+            document.getElementById("bags").disabled = false;
+            if (document.getElementById("bags").value < 1) {
+              document.getElementById("bags").value = 1;
+            };
+            document.getElementById("net_kg_qty").value = GetWeight();
+            document.getElementById("net_kg_qty_label").innerHTML = 'Net Kg';
+            RefreshValues(GetSellingPrice(), GetWeight());
+        };
+    };
+  </script>
+
+  <script>
+    document.getElementById("bags").onchange = function () {
+        RefreshValues(GetSellingPrice());
+    };
+  </script>
+
+  <script>
+    document.getElementById("net_kg_qty").onchange = function () {
+        RefreshValues(GetSellingPrice(), this.value);
+    };
+  </script>
+
+  <script>
+    document.getElementById("unit_sp").onchange = function () {
+        // RefreshAmount();
+        RefreshValues(GetSellingPrice(), GetWeight());
+    };
+  </script>
+
+  <script>
+    function GetWeight() {
+      return document.getElementById("bags").value * 50;
+    };
+
+    function GetSellingPrice(refresh = false) {
+      sp = GetItemProps(refresh)[0];
+      if (refresh) {
+        document.getElementById("unit_sp").value = sp;
+      };
+      return sp;
+    };
+
+    is_item_cereal = false;
+    function GetItemProps(refresh = false) {
+        if (!refresh) {
+          return [document.getElementById("unit_sp").value, is_item_cereal];
+        };
+        item_ind = document.getElementById("item_id").value;
+        items2 = {{ items|tojson|safe }};
+        j = -1;
+        for (var i = 0; i < items2.length; i++) {
+          if (items2[i][0] == item_ind ) {
+              j = i; 
+            };
+        };
+        retval = [ items2[j][1], items2[j][2] ];
+        is_item_cereal = retval[1];
+
+      return retval;
+    };
+
+    // function RefreshAmount() {
+    //   qty = document.getElementById("net_kg_qty").value;
+    //   sp = document.getElementById("unit_sp").value;
+    //   document.getElementById("amount").value = round(qty * sp,2);
+    // };
+
+    function RefreshValues(sp, qty = -1 ) {
+        if (qty > -1) {
+          n_weight = qty;
+        } else {
+          n_weight = GetWeight();
+          document.getElementById("net_kg_qty").value = n_weight;
+        }
+        document.getElementById("amount").value = (n_weight * sp).toFixed(2);
+    };
+
+
+  </script>
+
+{% endblock %}
+
+{% endblock %}

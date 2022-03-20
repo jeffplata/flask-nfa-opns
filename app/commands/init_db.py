@@ -43,8 +43,8 @@ def create_app_data():
     var_misc = find_or_create_variety('Miscellaneous', miscellaneous)
 
     # Item(item_name, commodity, variety, container, unit price)
-    find_or_create_item('WD1', local_rice, wd1, g50, 1250.00)
-    find_or_create_item('WD2', local_rice, wd2, g50, 1150.00)
+    find_or_create_item('WD1', local_rice, wd1, g50, 25.00)
+    find_or_create_item('WD2', local_rice, wd2, g50, 23.00)
     find_or_create_item('PD1', local_palay, pd1, e50)
     find_or_create_item('PD3', local_palay, pd3, e50)
     find_or_create_item('Tennis Court', facilities, var_fac, None, 160.00)
