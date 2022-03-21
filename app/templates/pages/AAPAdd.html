@@ -1,8 +1,6 @@
 {% extends "layout.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block main_content %}
-
 {% block styles %}
   {{ super() }}
   <style>
@@ -19,8 +17,11 @@
 {% endblock %}
 
 {% block head %}
+  {{super()}}
   <link rel="stylesheet" href="static/jquery-ui-1.13.1.custom/jquery-ui.css">
 {% endblock %}
+
+{% block main_content %}
 
 <p>
 <h3>Create New Authority to Accept Payment</h3>
@@ -76,6 +77,7 @@
     </form>
 </div>
 
+{% endblock %}  {# main_block #}
 
 {% block scripts %}
   {{ super() }}
@@ -172,11 +174,6 @@
       return retval;
     };
 
-    // function RefreshAmount() {
-    //   qty = document.getElementById("net_kg_qty").value;
-    //   sp = document.getElementById("unit_sp").value;
-    //   document.getElementById("amount").value = round(qty * sp,2);
-    // };
 
     function RefreshValues(sp, qty = -1 ) {
         if (qty > -1) {
@@ -191,6 +188,20 @@
 
   </script>
 
-{% endblock %}
+
+  <script>
+    document.addEventListener('readystatechange', event => { 
+
+    // When HTML/DOM elements are ready:
+    // if (event.target.readyState === "interactive") {   //does same as:  ..addEventListener("DOMContentLoaded"..
+        // alert("hi 1");
+    // }
+
+    // When window loaded ( external resources are loaded too- `css`,`src`, etc...) 
+    if (event.target.readyState === "complete") {
+        RefreshValues(GetSellingPrice(true), GetWeight());
+    }
+});
+  </script>
 
 {% endblock %}
