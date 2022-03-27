@@ -59,17 +59,18 @@ def aap_new():
     form = AAPForm()
 
     if request.method == 'GET':
+        form.basic_data.doc_date.data = datetime.now()
         form.item_id.query_factory = get_items
         form.warehouse_id.query_factory = get_warehouses_fac
         items = tuple( (i.id, str(round(i.selling_price,2)), i.variety.commodity.is_cereal) for i in get_items() )
     return render_template('pages/AAPAdd.html', form=form, items=items)
 
-@bp.route('/test-page', methods=['GET', 'POST'])
-def test_page():
-    form = AAPForm()
+# @bp.route('/test-page', methods=['GET', 'POST'])
+# def test_page():
+#     form = AAPForm()
 
-    if request.method == 'GET':
-        form.item_id.query_factory = get_items
-        form.warehouse_id.query_factory = get_warehouses_fac
-        items = tuple( (i.id, str(round(i.selling_price,2)), i.variety.commodity.is_cereal) for i in get_items() )
-        return render_template('pages/test-page.html', form=form, items=items)
+#     if request.method == 'GET':
+#         form.item_id.query_factory = get_items
+#         form.warehouse_id.query_factory = get_warehouses_fac
+#         items = tuple( (i.id, str(round(i.selling_price,2)), i.variety.commodity.is_cereal) for i in get_items() )
+#         return render_template('pages/test-page.html', form=form, items=items)
